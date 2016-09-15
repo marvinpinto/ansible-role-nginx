@@ -1,0 +1,26 @@
+---
+- name: 'Add the nginx apt signing key'
+  apt_key:
+    url: 'http://nginx.org/keys/nginx_signing.key'
+    state: 'present'
+
+- name: 'Add the nginx ubuntu mainline repository'
+  apt_repository:
+    repo: 'deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx'
+    state: 'present'
+    filename: 'nginx'
+    update_cache: 'yes'
+
+- name: "Install the latest mainline version of nginx"
+  apt:
+    name: 'nginx'
+    state: 'latest'
+  notify: 'reload-ansible-role-nginx'
+
+- name: 'Start the nginx service'
+  service:
+    name: 'nginx'
+    state: 'started'
+    enabled: 'yes'
+
+- meta: flush_handlers
